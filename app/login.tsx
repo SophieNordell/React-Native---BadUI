@@ -28,7 +28,7 @@ const Login = () => {
     setErrorMessage("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.replace("/(tabs)");
+      router.replace("/onboarding");
     } catch (error: any) {
       Alert.alert("Inloggningsfel", error.message);
       setErrorMessage("Fel E-mail eller lösenord");
@@ -45,7 +45,7 @@ const Login = () => {
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      router.replace("/(tabs)");
+      router.replace("/onboarding");
     } catch (error: any) {
       Alert.alert("Registreringsfel", error.message);
       setErrorMessage("Fel vid registrering, försök igen.");
