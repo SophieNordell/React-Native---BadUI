@@ -1,6 +1,12 @@
 import { useRouter } from "expo-router";
 import { signOut } from "firebase/auth";
-import { Button, StyleSheet, Text, View, ImageBackground } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  TouchableOpacity,
+} from "react-native";
 import auth from "../../firebase/firebase";
 
 const Profile = () => {
@@ -21,8 +27,9 @@ const Profile = () => {
 
   return (
     <ImageBackground source={image} style={styles.container}>
-      <Text style={styles.text}>Hej där! </Text>
-      <Button title="Logga ut" onPress={handleLogout} />
+      <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+        <Text style={styles.logoutText}>Logga ut</Text>
+      </TouchableOpacity>
     </ImageBackground>
   );
 };
@@ -30,11 +37,22 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
   },
   text: {
-    fontSize: 8,
+    fontSize: 6,
+    marginBottom: 20,
+  },
+  logoutButton: {
+    paddingVertical: 200,
+    paddingHorizontal: 140,
+    borderWidth: 10,
+    borderColor: "red",
+    backgroundColor: "transparent",
+  },
+  logoutText: {
+    color: "red",
+    fontSize: 6,
   },
 });
 

@@ -14,7 +14,7 @@ const TabLayout = () => {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        headerShown: false,
+        headerShown: true,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
@@ -47,7 +47,7 @@ const TabLayout = () => {
         name="profile"
         options={{
           title: "Profil",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: () => (
             <Image
               source={require("@/assets/images/profilepic.jpg")}
               style={{ width: 30, height: 30 }}
