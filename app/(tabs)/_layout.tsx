@@ -5,7 +5,22 @@ import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform } from "react-native";
+import { Image, Platform } from "react-native";
+
+const DonkeyIcon = () => (
+  <Image
+    source={require("../../assets/images/åsnan2.jpg")}
+    style={{ width: 28, height: 28 }}
+    resizeMode="contain"
+  />
+);
+const ShekIcon = () => (
+  <Image
+    source={require("../../assets/images/shek.jpg")}
+    style={{ width: 28, height: 28 }}
+    resizeMode="contain"
+  />
+);
 
 const TabLayout = () => {
   const colorScheme = useColorScheme();
@@ -29,18 +44,14 @@ const TabLayout = () => {
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
-          ),
+          tabBarIcon: DonkeyIcon,
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
           title: "Explore",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
-          ),
+          tabBarIcon: ShekIcon,
         }}
       />
       <Tabs.Screen
