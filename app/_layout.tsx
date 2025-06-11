@@ -20,7 +20,7 @@ export default function RootLayout() {
   return (
     <Stack>
       {!user ? (
-        <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen name="login" options={{ headerShown: true }} />
       ) : (
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
       )}
