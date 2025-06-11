@@ -1,15 +1,112 @@
 import { useRouter } from "expo-router";
 import { signOut } from "firebase/auth";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Button,
+  Dimensions,
+  Easing,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import auth from "../../firebase/firebase";
+
+const { width, height } = Dimensions.get("window");
 
 const Index = () => {
   const router = useRouter();
 
+  const [bgColor, setBgColor] = useState("#000");
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [textColor] = useState("#39ff14");
+  const [isFlying, setIsFlying] = useState(false);
+
+  const spinAnim = useRef(new Animated.Value(0)).current;
+  const flyPosition = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+
+  const spinAnimRef = useRef<Animated.CompositeAnimation | null>(null);
+  const isFlyingRef = useRef(false); // För att undvika flera start
+
+  const spin = spinAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"],
+  });
+
+  const flyRotation = flyPosition.y.interpolate({
+    inputRange: [0, height],
+    outputRange: ["0deg", "720deg"],
+  });
+
+  const startSpin = () => {
+    if (isSpinning) {
+      spinAnimRef.current?.stop();
+      spinAnimRef.current = null;
+      setIsSpinning(false);
+      return;
+    }
+
+    spinAnim.setValue(0);
+    const spinAnimation = Animated.loop(
+      Animated.timing(spinAnim, {
+        toValue: 1,
+        duration: 1500,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    );
+
+    spinAnimRef.current = spinAnimation;
+    spinAnimation.start();
+    setIsSpinning(true);
+  };
+
+  useEffect(() => {
+    const neonColors = [
+      "#ffa500",
+      "#ff00ff",
+      "#00ffff",
+      "#39ff14",
+      "#ffff00",
+      "#ff073a",
+    ];
+
+    let i = 0;
+    const interval = setInterval(() => {
+      setBgColor(neonColors[i % neonColors.length]);
+      i++;
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const moveRocket = () => {
+    if (!isFlyingRef.current) return;
+
+    const randomX = Math.random() * (width - 60);
+    const randomY = Math.random() * (height - 100);
+
+    Animated.timing(flyPosition, {
+      toValue: { x: randomX, y: randomY },
+      duration: 2000,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: true,
+    }).start(() => {
+      moveRocket(); // Kör nästa rörelse direkt efter
+    });
+  };
+
+  const startFlyLoop = () => {
+    if (isFlyingRef.current) return;
+    isFlyingRef.current = true;
+    setIsFlying(true);
+    moveRocket();
+  };
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      console.log("Navigera till login");
       router.replace("/login");
     } catch (error) {
       console.error("Fel vid utloggning:", error);
@@ -17,9 +114,53 @@ const Index = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Hejsan</Text>
-      <Button title="Logga ut" onPress={handleLogout} />
+    <View style={[styles.container, { backgroundColor: bgColor }]}>
+      <Animated.Text
+        onPress={startFlyLoop}
+        style={[
+          styles.flyingIcon,
+          {
+            transform: [
+              { translateX: flyPosition.x },
+              { translateY: flyPosition.y },
+              { rotate: flyRotation },
+            ],
+            opacity: 0.9,
+          },
+        ]}
+      >
+        🚀
+      </Animated.Text>
+
+      <Animated.Text
+        onPress={startSpin}
+        style={[
+          styles.spinningText,
+          { color: textColor, transform: [{ rotate: spin }] },
+        ]}
+      >
+        🕹️ VÄLKOMMEN TILL Alva och Sophies sida 🕹️
+      </Animated.Text>
+
+      <Pressable
+        onPress={() => {
+          const neonColors = [
+            "#ff00ff",
+            "#00ffff",
+            "#39ff14",
+            "#ff073a",
+            "#ffff00",
+            "#ff6ec7",
+          ];
+          setBgColor(neonColors[Math.floor(Math.random() * neonColors.length)]);
+          startSpin();
+        }}
+        style={styles.weirdBox}
+      >
+        <Text style={styles.weirdText}>TRYCK HÄR</Text>
+      </Pressable>
+
+      <Button title="🫣 LOGGA UT" onPress={handleLogout} color="#ff00ff" />
     </View>
   );
 };
@@ -27,11 +168,48 @@ const Index = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    paddingTop: 80,
     alignItems: "center",
+    justifyContent: "space-around",
+    backgroundColor: "#000",
   },
-  text: {
-    fontSize: 20,
+  spinningText: {
+    fontSize: 28,
+    fontWeight: "900",
+    padding: 20,
+    borderRadius: 50,
+    backgroundColor: "#000",
+    textAlign: "center",
+    letterSpacing: 2,
+    fontFamily: "Courier New",
+    textShadowColor: "#ff00ff",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 10,
+  },
+  weirdBox: {
+    backgroundColor: "#ff00ff",
+    borderWidth: 3,
+    borderColor: "#00ffff",
+    padding: 25,
+    borderRadius: 5,
+  },
+  weirdText: {
+    color: "#00ffff",
+    fontSize: 18,
+    fontWeight: "bold",
+    fontStyle: "italic",
+    textShadowColor: "#ff00ff",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 5,
+    textAlign: "center",
+  },
+  flyingIcon: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    fontSize: 50,
+    zIndex: 10,
   },
 });
+
 export default Index;
