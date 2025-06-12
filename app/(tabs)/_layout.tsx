@@ -6,21 +6,6 @@ import { Tabs } from "expo-router";
 import React from "react";
 import { Image, Platform } from "react-native";
 
-const DonkeyIcon = () => (
-  <Image
-    source={require("../../assets/images/åsnan2.jpg")}
-    style={{ width: 28, height: 28 }}
-    resizeMode="contain"
-  />
-);
-const ShekIcon = () => (
-  <Image
-    source={require("../../assets/images/shek.jpg")}
-    style={{ width: 28, height: 28 }}
-    resizeMode="contain"
-  />
-);
-
 const TabLayout = () => {
   const colorScheme = useColorScheme();
 
@@ -43,14 +28,26 @@ const TabLayout = () => {
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: DonkeyIcon,
+          tabBarIcon: () => (
+            <Image
+              source={require("@/assets/images/åsnan2.jpg")}
+              style={{ width: 28, height: 28 }}
+              resizeMode="contain"
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
           title: "Explore",
-          tabBarIcon: ShekIcon,
+          tabBarIcon: () => (
+            <Image
+              source={require("@/assets/images/shek.jpg")}
+              style={{ width: 28, height: 28 }}
+              resizeMode="contain"
+            />
+          ),
         }}
       />
       <Tabs.Screen
@@ -61,6 +58,7 @@ const TabLayout = () => {
             <Image
               source={require("@/assets/images/profilepic.jpg")}
               style={{ width: 30, height: 30 }}
+              resizeMode="contain"
             />
           ),
         }}
@@ -68,4 +66,5 @@ const TabLayout = () => {
     </Tabs>
   );
 };
+
 export default TabLayout;

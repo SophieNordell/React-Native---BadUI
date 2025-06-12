@@ -1,6 +1,6 @@
+import { useRouter } from "expo-router";
 import React from "react";
 import { ImageBackground, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
 // @ts-ignore
 import Onboarding from "react-native-onboarding-swiper";
 
@@ -21,7 +21,7 @@ export default function OnboardingScreen() {
       onDone={() => router.replace("/(tabs)")}
       pages={[
         {
-          backgroundColor: "#000", // dark bg so gifs pop
+          backgroundColor: "#000",
           image: (
             <GifImage uri="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Rotating_earth_%28large%29.gif/250px-Rotating_earth_%28large%29.gif" />
           ),

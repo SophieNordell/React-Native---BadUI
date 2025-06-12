@@ -21,13 +21,12 @@ const Index = () => {
   const [bgColor, setBgColor] = useState("#000");
   const [isSpinning, setIsSpinning] = useState(false);
   const [textColor] = useState("#39ff14");
-  const [isFlying, setIsFlying] = useState(false);
 
   const spinAnim = useRef(new Animated.Value(0)).current;
   const flyPosition = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
 
   const spinAnimRef = useRef<Animated.CompositeAnimation | null>(null);
-  const isFlyingRef = useRef(false); // För att undvika flera start
+  const isFlyingRef = useRef(false);
 
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],
@@ -76,7 +75,7 @@ const Index = () => {
     const interval = setInterval(() => {
       setBgColor(neonColors[i % neonColors.length]);
       i++;
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(interval);
   }, []);
@@ -93,14 +92,13 @@ const Index = () => {
       easing: Easing.inOut(Easing.ease),
       useNativeDriver: true,
     }).start(() => {
-      moveRocket(); // Kör nästa rörelse direkt efter
+      moveRocket();
     });
   };
 
   const startFlyLoop = () => {
     if (isFlyingRef.current) return;
     isFlyingRef.current = true;
-    setIsFlying(true);
     moveRocket();
   };
 
@@ -129,7 +127,7 @@ const Index = () => {
           },
         ]}
       >
-        🚀
+        🐸
       </Animated.Text>
 
       <Animated.Text
@@ -139,7 +137,7 @@ const Index = () => {
           { color: textColor, transform: [{ rotate: spin }] },
         ]}
       >
-        🕹️ VÄLKOMMEN TILL Alva och Sophies sida 🕹️
+        🐸 VÄLKOMMEN TILL Alva och Sophies sida 🐸
       </Animated.Text>
 
       <Pressable
@@ -178,7 +176,7 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     padding: 20,
     borderRadius: 50,
-    backgroundColor: "#000",
+    backgroundColor: "#00FF00",
     textAlign: "center",
     letterSpacing: 2,
     fontFamily: "Courier New",
