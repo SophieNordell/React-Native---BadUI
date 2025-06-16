@@ -30,7 +30,7 @@ const Index = () => {
   const isFlyingRef = useRef(false);
 
   const soundRef = useRef<Audio.Sound | null>(null);
-  const [musicPlaying, setMusicPlaying] = useState(false); // Ny state för om musiken spelar
+  const [musicPlaying, setMusicPlaying] = useState(false);
 
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],
@@ -81,7 +81,6 @@ const Index = () => {
       i++;
     }, 500);
 
-    // Ladda musik vid start, men spela inte ännu
     const loadMusic = async () => {
       try {
         const { sound } = await Audio.Sound.createAsync(
@@ -104,7 +103,6 @@ const Index = () => {
     };
   }, []);
 
-  // Ny funktion för att spela upp musiken vid användarinteraktion
   const handlePlayMusic = async () => {
     if (soundRef.current && !musicPlaying) {
       try {
