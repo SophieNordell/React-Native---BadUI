@@ -1,3 +1,4 @@
+import { Audio } from "expo-av";
 import { useRouter } from "expo-router";
 import { signOut } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
@@ -27,6 +28,9 @@ const Index = () => {
 
   const spinAnimRef = useRef<Animated.CompositeAnimation | null>(null);
   const isFlyingRef = useRef(false);
+
+  const soundRef = useRef<Audio.Sound | null>(null);
+  const [musicPlaying, setMusicPlaying] = useState(false); // Ny state för om musiken spelar
 
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],
@@ -77,8 +81,40 @@ const Index = () => {
       i++;
     }, 500);
 
-    return () => clearInterval(interval);
+    // Ladda musik vid start, men spela inte ännu
+    const loadMusic = async () => {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require("../../assets/music/musik.mp3")
+        );
+        soundRef.current = sound;
+        await sound.setIsLoopingAsync(true);
+      } catch (error) {
+        console.error("Kunde inte ladda musik:", error);
+      }
+    };
+
+    loadMusic();
+
+    return () => {
+      clearInterval(interval);
+      if (soundRef.current) {
+        soundRef.current.unloadAsync();
+      }
+    };
   }, []);
+
+  // Ny funktion för att spela upp musiken vid användarinteraktion
+  const handlePlayMusic = async () => {
+    if (soundRef.current && !musicPlaying) {
+      try {
+        await soundRef.current.playAsync();
+        setMusicPlaying(true);
+      } catch (error) {
+        console.error("Kunde inte spela musik:", error);
+      }
+    }
+  };
 
   const moveRocket = () => {
     if (!isFlyingRef.current) return;
@@ -104,6 +140,7 @@ const Index = () => {
 
   const handleLogout = async () => {
     try {
+      if (soundRef.current) await soundRef.current.stopAsync();
       await signOut(auth);
       router.replace("/login");
     } catch (error) {
@@ -152,6 +189,7 @@ const Index = () => {
           ];
           setBgColor(neonColors[Math.floor(Math.random() * neonColors.length)]);
           startSpin();
+          handlePlayMusic();
         }}
         style={styles.weirdBox}
       >
